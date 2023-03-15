@@ -11,6 +11,10 @@ typedef struct Node{
 
 typedef Node * Tree;
 
+Tree insertNode(Tree root, int value, int *growUp);
+
+Tree deleteNode(Tree root, int value, int *decreased);
+
 Tree singleLeftRotation(Tree root);
 
 Tree singleRightRotation(Tree root);
@@ -18,10 +22,6 @@ Tree singleRightRotation(Tree root);
 Tree doubleLeftRotation(Tree root);
 
 Tree doubleRightRotation(Tree root);
-
-Tree insertNode(Tree root, int value, int *growUp);
-
-Tree deleteNode(Tree root, int value, int *decreased);
 
 Tree rotation(Tree root);
 
