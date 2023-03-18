@@ -470,6 +470,7 @@ void printMenu () {
     printf("| 8. Procurar aluno pela chamada          |\n");
     printf("| 9. Procurar aluno pela idade            |\n");
     printf("| 10. Procurar aluno pelo id              |\n");
+    printf("| 99. Encerrar e salvar informações       |\n");
     printf("===========================================\n");
     printf("Digite uma das opções acima: ");
 }
