@@ -48,105 +48,76 @@ void addStudent (Table table, Student student, int *growUp) {
     }
 }
 
-AbstractData getIndexBST (Table table, int key) {
+void deleteStudentBST (Table table, int value, int *growUp) {
+            Student temp = (Student)malloc(sizeof(struct student));
+            temp = getStudentBST(table, value);
+            table->indexBST = deleteNodeBST(table->indexBST, temp->callNumber);
+            table->indexAVL = deleteNodeAVL(table->indexAVL, temp->age, growUp);
+            deleteNodeRB(&table->indexRB, temp->id);
+}
+
+void deleteStudentAVL (Table table, int value, int *growUp) {
+            Student temp = (Student)malloc(sizeof(struct student));
+            temp = getStudentAVL(table, value);
+            table->indexBST = deleteNodeBST(table->indexBST, temp->callNumber);
+            table->indexAVL = deleteNodeAVL(table->indexAVL, temp->age, growUp);
+            deleteNodeRB(&table->indexRB, temp->id);
+}
+
+void deleteStudentRB (Table table, int value, int *growUp) {
+            Student temp = (Student)malloc(sizeof(struct student));
+            temp = getStudentRB(table, value);
+            table->indexBST = deleteNodeBST(table->indexBST, temp->callNumber);
+            table->indexAVL = deleteNodeAVL(table->indexAVL, temp->age, growUp);
+            deleteNodeRB(&table->indexRB, temp->id);
+}
+
+Student getStudentBST (Table table, int key) {
     if (table->dataFile != NULL) {
         BstNode temp;
         temp = table->indexBST;
+        
         while (temp != NULL) {
-            if (temp->data->keyBST == key)
-                return temp->data;
-            else if (key > temp->data->keyBST)
-                temp = temp->rightNode;
-            else
-                temp = temp->leftNode;
+            if (temp->data->keyBST == key) {
+                Student dataFound = (Student)malloc(sizeof(student));
+                char *buffer = (char*)malloc(512 * sizeof(char));
+                char *subStr;
+                
+                fseek(table->dataFile, temp->data->indexBST, SEEK_SET);
+                fgets(buffer, 512, table->dataFile);
+                
+                subStr = strtok(buffer, ":");
+                dataFound->id = atoi(subStr);
+                       
+                subStr = strtok(NULL, ":");
+                dataFound->name = strdup(subStr);
+                
+                subStr = strtok(NULL, ":");
+                dataFound->motherName = strdup(subStr);
+
+                subStr = strtok(NULL, ":");
+                dataFound->callNumber = atoi(subStr);
+                
+                subStr = strtok(NULL, ":");
+                dataFound->age = atoi(subStr);
+                
+                free(buffer);
+                
+                return dataFound;
+            }
+            else {
+                if (key > temp->data->keyBST) {
+                    temp = temp->rightNode;
+                } else {
+                    temp = temp->leftNode;
+                }
+            }
         }
-        return NULL;
     }
+    return NULL;
 }
 
-AbstractData getIndexAVL (Table table, int key) {
-    if (table->dataFile != NULL) {
-        AvlNode temp;
-        temp = table->indexAVL;
-        while (temp != NULL) {
-            if (temp->data->keyAVL == key)
-                return temp->data;
-            else if (key > temp->data->keyAVL)
-                temp = temp->rightNode;
-            else
-                temp = temp->leftNode;
-        }
-        return NULL;
-    }
-}
-
-AbstractData getIndexRB (Table table, int key) {
-    if (table->dataFile != NULL) {
-        RbNode temp;
-        temp = table->indexRB;
-        while (temp != NULL) {
-            if (temp->data->keyRB == key)
-                return temp->data;
-            else if (key > temp->data->keyRB)
-                temp = temp->rightNode;
-            else
-                temp = temp->leftNode;
-        }
-        return NULL;
-    }
-}
-
-void deleteStudentBST (Table table, int value, int *growUp) {
-//         if (table->indexBST->data->keyBST == value) {
-            
-            AbstractData indexBST = getIndexBST(table, value);
-            AbstractData indexAVL = getIndexAVL(table, value);
-            AbstractData indexRB = getIndexRB(table, value);
-
-            table->indexBST = deleteNodeBST(table->indexBST, indexBST);
-            table->indexAVL = deleteNodeAVL(table->indexAVL, indexAVL, growUp);            
-            deleteNodeRB(&table->indexRB, indexRB);
-//         }
-}
-
-// void deleteStudentAVL (Table table, int value, int *growUp) {
-// //         if (table->indexBST->data->keyBST == value) {
-//             AbstractData index = getIndex(table, value);
-//             table->indexBST = deleteNodeBST(table->indexBST, index);
-//             table->indexAVL = deleteNodeAVL(table->indexAVL, index, growUp);
-//             deleteNodeRB(&table->indexRB, index);
-// //         }
-// }
-
-Student getStudent (Table table, AbstractData temp) {
-    Student dataFound = (Student)malloc(sizeof(student));
-    char *buffer = (char*)malloc(512 * sizeof(char));
-    char *subStr;
-    
-    fseek(table->dataFile, temp->indexBST, SEEK_SET);
-    fgets(buffer, 512, table->dataFile);
-    
-    subStr = strtok(buffer, ":");
-    dataFound->id = atoi(subStr);
-            
-    subStr = strtok(NULL, ":");
-    dataFound->name = strdup(subStr);
-    
-    subStr = strtok(NULL, ":");
-    dataFound->motherName = strdup(subStr);
-
-    subStr = strtok(NULL, ":");
-    dataFound->callNumber = atoi(subStr);
-    
-    subStr = strtok(NULL, ":");
-    dataFound->age = atoi(subStr);
-    
-    free(buffer);
-    
-    return dataFound;
-}
-
-/*Student getStudentAVL (Table table, int key) {
+Student getStudentAVL (Table table, int key) {
     if (table->dataFile != NULL) {
         AvlNode temp;
         temp = table->indexAVL;
@@ -157,12 +128,11 @@ Student getStudent (Table table, AbstractData temp) {
                 char *buffer = (char*)malloc(512 * sizeof(char));
                 char *subStr;
                 
-                fseek(table->dataFile, temp->indexBST, SEEK_SET);
+                fseek(table->dataFile, temp->data->indexAVL, SEEK_SET);
                 fgets(buffer, 512, table->dataFile);
                 
                 subStr = strtok(buffer, ":");
                 dataFound->id = atoi(subStr);
-                printf("%d", dataFound->id);
                        
                 subStr = strtok(NULL, ":");
                 dataFound->name = strdup(subStr);
@@ -203,12 +173,11 @@ Student getStudentRB (Table table, int key) {
                 char *buffer = (char*)malloc(512 * sizeof(char));
                 char *subStr;
                 
-                fseek(table->dataFile, temp->data->indexBST, SEEK_SET);
+                fseek(table->dataFile, temp->data->indexRB, SEEK_SET);
                 fgets(buffer, 512, table->dataFile);
                 
                 subStr = strtok(buffer, ":");
                 dataFound->id = atoi(subStr);
-                printf("%d", dataFound->id);
                        
                 subStr = strtok(NULL, ":");
                 dataFound->name = strdup(subStr);
@@ -236,7 +205,7 @@ Student getStudentRB (Table table, int key) {
         }
     }
     return NULL;
-}*/
+}
 
 Student inputData () {
     Student new = (Student)malloc(sizeof(struct student));
@@ -376,12 +345,133 @@ void loadFileRB (RbNode *root, char* path) {
     }
 }
 
-void printElement (BstNode root, Table table) {
+void printElementBST (BstNode root, Table table) {
     Student temp = (Student)malloc(sizeof(struct student));
+    char* buffer = (char*)malloc(256 * sizeof(char));
+    char *subStr;            
     fseek(table->dataFile, root->data->indexBST, SEEK_SET);
-    fread(temp, sizeof(struct student), 1, table->dataFile);
-    printf("[Chave: %d, Nome: %s, Nome da mae: %s, Turma: %d, Numero da chamada: %d, Idade: %d]\n", root->data->keyBST, temp->name, temp->motherName, temp->id, temp->callNumber, temp->age);
+    fgets(buffer, 512, table->dataFile);
+                
+    subStr = strtok(buffer, ":");
+    temp->id = atoi(subStr);
+            
+    subStr = strtok(NULL, ":");
+    temp->name = strdup(subStr);
+    
+    subStr = strtok(NULL, ":");
+    temp->motherName = strdup(subStr);
+
+    subStr = strtok(NULL, ":");
+    temp->callNumber = atoi(subStr);
+    
+    subStr = strtok(NULL, ":");
+    temp->age = atoi(subStr);
+    
+    free(buffer);
+    
+    printf("[Chave: %d, ID: %d, Nome: %s, Nome da mae: %s, Numero da chamada: %d, Idade: %d]\n", root->data->keyBST, temp->id, temp->name, temp->motherName, temp->callNumber, temp->age);
+    
     free(temp);
+}
+
+void printElementAVL (AvlNode root, Table table) {
+    Student temp = (Student)malloc(sizeof(struct student));
+    char* buffer = (char*)malloc(256 * sizeof(char));
+    char *subStr;            
+    fseek(table->dataFile, root->data->indexAVL, SEEK_SET);
+    fgets(buffer, 512, table->dataFile);
+                
+    subStr = strtok(buffer, ":");
+    temp->id = atoi(subStr);
+            
+    subStr = strtok(NULL, ":");
+    temp->name = strdup(subStr);
+    
+    subStr = strtok(NULL, ":");
+    temp->motherName = strdup(subStr);
+
+    subStr = strtok(NULL, ":");
+    temp->callNumber = atoi(subStr);
+    
+    subStr = strtok(NULL, ":");
+    temp->age = atoi(subStr);
+    
+    free(buffer);
+    
+    printf("[Chave: %d, ID: %d, Nome: %s, Nome da mae: %s, Numero da chamada: %d, Idade: %d]\n", root->data->keyAVL, temp->id, temp->name, temp->motherName, temp->callNumber, temp->age);
+    
+    free(temp);
+}
+
+void printElementRB (RbNode root, Table table) {
+    Student temp = (Student)malloc(sizeof(struct student));
+    char* buffer = (char*)malloc(256 * sizeof(char));
+    char *subStr;            
+    fseek(table->dataFile, root->data->indexRB, SEEK_SET);
+    fgets(buffer, 512, table->dataFile);
+                
+    subStr = strtok(buffer, ":");
+    temp->id = atoi(subStr);
+            
+    subStr = strtok(NULL, ":");
+    temp->name = strdup(subStr);
+    
+    subStr = strtok(NULL, ":");
+    temp->motherName = strdup(subStr);
+
+    subStr = strtok(NULL, ":");
+    temp->callNumber = atoi(subStr);
+    
+    subStr = strtok(NULL, ":");
+    temp->age = atoi(subStr);
+    
+    free(buffer);
+    
+    printf("[Chave: %d, ID: %d, Nome: %s, Nome da mae: %s, Numero da chamada: %d, Idade: %d]\n", root->data->keyRB, temp->id, temp->name, temp->motherName, temp->callNumber, temp->age);
+    
+    free(temp);
+}
+
+void inOrderBST (BstNode root, Table table) {
+    if (root != NULL) {
+        inOrderBST(root->leftNode, table);
+        printElementBST(root, table);
+        inOrderBST(root->rightNode, table);
+    }
+}
+
+void inOrderAVL (AvlNode root, Table table) {
+    if (root != NULL) {
+        inOrderAVL(root->leftNode, table);
+        printElementAVL(root, table);
+        inOrderAVL(root->rightNode, table);
+    }
+}
+
+void inOrderRB (RbNode root, Table table) {
+    if (root != NULL) {
+        inOrderRB(root->leftNode, table);
+        printElementRB(root, table);
+        inOrderRB(root->rightNode, table);
+    }
+}
+
+void printMenu () {
+    printf("\n");
+    printf("===========================================\n");
+    printf("|-------------Menu de Opções--------------|\n");
+    printf("| 1. Adicionar aluno                      |\n");
+    printf("| 2. Remover aluno pelo numero da chamada |\n");
+    printf("| 3. Remover aluno pela idade             |\n");
+    printf("| 4. Remover aluno pelo id                |\n");
+    printf("| 5. Mostrar alunos em ordem pela chamada |\n");
+    printf("| 6. Mostrar alunos em ordem pela idade   |\n");
+    printf("| 7. Mostrar alunos em ordem pelo id      |\n");
+    printf("| 8. Procurar aluno pela chamada          |\n");
+    printf("| 9. Procurar aluno pela idade            |\n");
+    printf("| 10. Procurar aluno pelo id              |\n");
+    printf("===========================================\n");
+    printf("Digite uma das opções acima: ");
 }
 
 

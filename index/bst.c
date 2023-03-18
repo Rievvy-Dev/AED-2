@@ -26,9 +26,9 @@ BstNode insertNodeBST (BstNode root, AbstractData data) {
     
 }
 
-BstNode deleteNodeBST (BstNode root, AbstractData data) {
+BstNode deleteNodeBST (BstNode root, int value) {
     if (root != NULL) {
-        if (root->data->keyBST == data->keyBST) {
+        if (root->data->keyBST == value) {
             if (root->rightNode == NULL && root->leftNode == NULL) {
                 free(root);
                 return NULL;
@@ -42,14 +42,14 @@ BstNode deleteNodeBST (BstNode root, AbstractData data) {
                 return assistant;
             } else {
                 root->data = highestValueBST(root->leftNode);
-                root->leftNode = deleteNodeBST(root->leftNode, root->data);
+                root->leftNode = deleteNodeBST(root->leftNode, value);
                 return root;
             }
         } else {
-            if (root->data->keyBST < data->keyBST) {
-                root->rightNode = deleteNodeBST(root->rightNode, data);
+            if (root->data->keyBST < value) {
+                root->rightNode = deleteNodeBST(root->rightNode, value);
             } else {
-                root->leftNode = deleteNodeBST(root->leftNode, data);
+                root->leftNode = deleteNodeBST(root->leftNode, value);
             }
             return root;
         }

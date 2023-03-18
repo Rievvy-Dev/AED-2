@@ -105,15 +105,15 @@ void fixInsert (RbNode *root, RbNode node) {
     (*root)->color = BLACK;
 }
 
-void deleteNodeRB (RbNode *root, AbstractData data) {
+void deleteNodeRB (RbNode *root, int value) {
     RbNode removableNode;
     removableNode = *root;
     
     while (removableNode != NULL) {
-        if (removableNode->data == data) {
+        if (removableNode->data->keyRB == value) {
             if (removableNode->leftNode != NULL && removableNode->rightNode != NULL) {
                 removableNode->data = highestValueRB(removableNode->leftNode);
-                deleteNodeRB(&removableNode->leftNode, removableNode->data);
+                deleteNodeRB(&removableNode->leftNode, removableNode->data->keyRB);
                 break;
             }
             if (removableNode->leftNode == NULL && removableNode->rightNode != NULL) {
@@ -158,7 +158,7 @@ void deleteNodeRB (RbNode *root, AbstractData data) {
                 }
             }
         } else {
-            if (removableNode->data->keyRB <= data->keyRB) {
+            if (removableNode->data->keyRB <= value) {
                 removableNode = removableNode->rightNode;
             } else {
                 removableNode = removableNode->leftNode;

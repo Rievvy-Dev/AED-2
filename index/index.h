@@ -62,6 +62,8 @@ typedef struct table {
 
 typedef table * Table;
 
+void printMenu();
+
 int initTable(Table table);
 
 Student inputData();
@@ -72,31 +74,25 @@ void addStudent(Table table, Student student, int *growUp);
 
 void removeEnter(char *string);
 
-void printElement(BstNode bstNode, Table table);
+void printElementBST(BstNode root, Table table);
 
-void inOrder(BstNode root, Table table);
+void printElementAVL(AvlNode root, Table table);
 
-void posOrder(BstNode root, Table table);
+void printElementRB(RbNode root, Table table);
 
-void deleteStudentBST(Table table, int value, int *growUp);
+void inOrderBST(BstNode root, Table table);
 
-AbstractData getIndexBST(Table table, int value);
+void inOrderAVL(AvlNode root, Table table);
+
+void inOrderRB(RbNode root, Table table);
 
 // BST:
-
-////
-
-AbstractData getIndexAVL (Table table, int key);
-
-AbstractData getIndexRB (Table table, int key);
-
-////
 
 void initBstTree(BstNode *root);
 
 BstNode insertNodeBST(BstNode root, AbstractData data);
 
-BstNode deleteNodeBST(BstNode root, AbstractData data);
+BstNode deleteNodeBST(BstNode root, int value);
 
 AbstractData highestValueBST(BstNode root);
 
@@ -110,13 +106,15 @@ BstNode loadFileBST(BstNode root, char *path);
 
 Student getStudentBST (Table table, int key);
 
+void deleteStudentBST(Table table, int value, int *growUp);
+
 // AVL:
 
 void initAvlTree(AvlNode *root);
 
 AvlNode insertNodeAVL(AvlNode root, AbstractData data, int *growUp);
 
-AvlNode deleteNodeAvl(AvlNode root, AbstractData data, int *decreased);
+AvlNode deleteNodeAvl(AvlNode root, int value, int *decreased);
 
 AvlNode singleLeftRotationAVL(AvlNode root);
 
@@ -140,6 +138,8 @@ void preOrderAVL(AvlNode root);
 
 Student getStudentAVL (Table table, int key);
 
+void deleteStudentAVL(Table table, int value, int *growUp);
+
 // RB:
 
 void initRbTree(RbNode *root);
@@ -148,7 +148,7 @@ void insertNodeRB(RbNode *root, AbstractData data);
 
 void fixInsert(RbNode *root, RbNode node);
 
-void deleteNodeRB(RbNode *root, AbstractData data);
+void deleteNodeRB(RbNode *root, int value);
 
 void fixDelete(RbNode *root, RbNode doubleBlackNode);
 
@@ -183,5 +183,7 @@ void saveFileAuxRB(RbNode root, FILE *file);
 void loadFileRB(RbNode *root, char*path);
 
 Student getStudentRB (Table table, int key);
+
+void deleteStudentRB(Table table, int value, int *growUp);
 
 #endif

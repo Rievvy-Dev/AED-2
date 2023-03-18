@@ -59,9 +59,9 @@ AvlNode insertNodeAVL (AvlNode root, AbstractData data, int *growUp) {
     }
 }
 
-AvlNode deleteNodeAVL (AvlNode root, AbstractData data, int *decreased) {
+AvlNode deleteNodeAVL (AvlNode root, int value, int *decreased) {
     if (root != NULL) {
-        if (root->data == data) {
+        if (root->data->keyAVL == value) {
             *decreased = 1;
             
             if (root->leftNode == NULL && root->rightNode == NULL) {
@@ -77,7 +77,7 @@ AvlNode deleteNodeAVL (AvlNode root, AbstractData data, int *decreased) {
                 return assistant;
             } else {
                 root->data = highestValueAVL(root->leftNode);
-                root->leftNode = deleteNodeAVL(root->leftNode, data, decreased);
+                root->leftNode = deleteNodeAVL(root->leftNode, value, decreased);
                 
                 if (*decreased) {
                     switch (root->balance) {
@@ -102,8 +102,8 @@ AvlNode deleteNodeAVL (AvlNode root, AbstractData data, int *decreased) {
                 return root;
             }
         } else {
-            if (root->data->keyAVL > data->keyAVL) {
-                root->leftNode = deleteNodeAVL(root->leftNode, data, decreased);
+            if (root->data->keyAVL > value) {
+                root->leftNode = deleteNodeAVL(root->leftNode, value, decreased);
                 
                 if (*decreased) {
                     switch (root->balance) {
@@ -121,7 +121,7 @@ AvlNode deleteNodeAVL (AvlNode root, AbstractData data, int *decreased) {
                     }
                 }
             } else {
-                root->rightNode = deleteNodeAVL(root->rightNode, data, decreased);
+                root->rightNode = deleteNodeAVL(root->rightNode, value, decreased);
                 
                 if (*decreased) {
                     switch (root->balance) {
